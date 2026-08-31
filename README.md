@@ -1,106 +1,106 @@
 # AI Hand Gesture Smart Home Copilot
 
-A smart home control system that enables users to operate connected devices using hand gestures and a mobile-friendly web dashboard.
+A smart home control system that allows users to operate connected devices through hand gestures, a mobile dashboard, and environmental sensing.
 
 ## Overview
 
-AI Hand Gesture Smart Home Copilot is designed to give users more flexible control over a home environment. Instead of relying on a single interaction method, the system supports both gesture-based control and manual dashboard control.
+AI Hand Gesture Smart Home Copilot is designed to make home automation more natural and flexible. Instead of depending on a single control method, the system supports both gesture-based input and manual device control from a phone or browser.
 
-The project is built around a simple principle: sensor data should provide context, not automatically trigger actions. For example, a high room temperature is displayed to the user, but a fan is only turned on when the user explicitly chooses to do so or when a configured automation is enabled.
+The key idea is simple: sensor data provides context, not automatic control. For example, a high room temperature may be displayed to the user, but a fan should only turn on when the user explicitly chooses to trigger that action or enables a valid automation rule.
 
-This first version focuses on delivering a reliable working system within the project timeline. More advanced features such as speech recognition can be considered in a future version.
+This first version focuses on building a reliable working system within the project timeline. More advanced features such as speech recognition can be planned for a future release.
 
 ## Project Roadmap
 
 ![Project Roadmap](mini_project_mind_map.png)
 
-## Goals and Scope
+## Project Goals
 
 ### Version 1 features
 
-- Hand gesture recognition through a camera
-- Smart device control using an ESP32
+- Hand gesture recognition using a camera
+- Smart device control with an ESP32
 - Mobile-friendly web dashboard
-- Manual device control from a phone
+- Manual control from a phone
 - MQTT communication between backend and ESP32
-- Basic environmental monitoring with temperature and humidity
-- Activity and device status monitoring
+- Temperature and humidity monitoring
+- Device state and activity tracking
 - Basic context-aware recommendations
 
 ### Core objective
 
-The main goal of Version 1 is to build a complete and reliable pipeline from user input to physical device control.
+Build a complete and reliable pipeline from user input to real device control.
+
+---
 
 ## System Architecture
 
-The system supports two primary input paths:
+The system supports two main command paths.
 
-### 1. Gesture-based control
-
-The user performs a predefined gesture in front of the camera.
+### 1) Gesture-based control
 
 ```text
 User Hand
-  ↓
+   ↓
 Camera
-  ↓
+   ↓
 OpenCV
-  ↓
+   ↓
 MediaPipe Hands
-  ↓
+   ↓
 Gesture Recognition
-  ↓
+   ↓
 Backend
-  ↓
+   ↓
 MQTT
-  ↓
+   ↓
 ESP32
-  ↓
+   ↓
 Connected Device
 ```
 
-The camera captures video frames, MediaPipe detects the hand and landmarks, and the gesture recognition module classifies the gesture. The backend validates the action and sends the corresponding command through MQTT to the ESP32, which then switches the connected device.
+The camera captures frames, MediaPipe detects the hand and landmarks, and the recognition module classifies the gesture. The backend validates the action and sends the corresponding command through MQTT to the ESP32, which then controls the connected device.
 
-### 2. Dashboard-based control
-
-The user can also control devices manually from a phone or browser-based dashboard.
+### 2) Dashboard-based control
 
 ```text
 Phone Browser
-  ↓
+   ↓
 Web Dashboard
-  ↓
+   ↓
 Backend API
-  ↓
+   ↓
 MQTT
-  ↓
+   ↓
 ESP32
-  ↓
+   ↓
 Connected Device
 ```
 
-This mode is especially useful when the user is not near the camera or prefers direct manual control.
+This mode is useful when the user is not near the camera or prefers direct manual control.
 
-> During development, the phone and backend machine should be on the same local network. The phone should access the backend using the computer's local IP address rather than localhost.
+> During development, the phone and backend machine should be on the same local network. Use the laptop or desktop’s local IP address instead of localhost on mobile devices.
+
+---
 
 ## Gesture Control Design
 
-Version 1 uses a small number of reliable gestures instead of trying to support a large gesture set.
+Version 1 uses a small number of reliable gestures instead of trying to support a large set.
 
 | Gesture | Purpose | Example Action |
 | --- | --- | --- |
 | Open Palm | Shutdown / Leaving Mode | Turn selected devices off |
 | Closed Fist | Activate | Turn a selected device or mode on |
 | Thumb Up | Confirm | Confirm a pending action |
-| Victory Sign | Work Mode | Activate the user's work setup |
+| Victory Sign | Work Mode | Activate the user’s work setup |
 
-These gestures are intentionally simple and easy to recognize. The exact mapping can be adjusted during development, but every gesture should have a clear, specific meaning.
+Each gesture has a clear meaning, and uncertain gestures should not trigger commands.
 
-To improve reliability, the system should not execute actions when a gesture is uncertain or below the required confidence threshold.
+---
 
 ## Sensor Data and Context Awareness
 
-Sensors provide environmental information, but they should not automatically trigger device actions unless the user has set up a valid automation rule.
+Sensors provide environmental information, but they should not automatically control devices unless a valid automation rule is configured.
 
 ### Primary sensor for Version 1
 
@@ -111,36 +111,36 @@ The DHT22 measures:
 - Temperature
 - Humidity
 
-Example:
+Example values:
 
 - Temperature: 34°C
 - Humidity: 60%
 
-This data can be displayed in the dashboard and used as context for recommendations.
-
-Example flow:
+This information can be displayed in the dashboard and used as context for recommendations.
 
 ```text
 Room temperature is high
-  ↓
-System displays the information
-  ↓
+   ↓
+System shows the data
+   ↓
 User decides whether to turn on the fan
 ```
 
-The correct logic is:
+Correct logic:
 
 ```text
 Sensor Data ≠ Automatic Command
 ```
 
-A high temperature alone should not directly switch on the fan. User intent and preferences remain important.
+A high temperature alone should not activate the fan automatically. User intent remains important.
 
-Additional sensors like PIR or LDR can be introduced later if they add meaningful value, but they are not required for the first working version.
+Additional sensors such as PIR or LDR may be added later if needed, but they are not required for the first working version.
+
+---
 
 ## Decision Flow
 
-The backend receives information from multiple sources and routes them through validation before sending commands.
+The backend receives data from different sources and validates it before sending commands.
 
 ```text
 Hand Gesture ─────┐
@@ -156,24 +156,26 @@ Sensor Data ──────┘
 - Dashboard: provides direct manual control
 - Sensors: provide environmental information
 - Backend: validates and processes commands
-- MQTT: transfers messages between components
-- ESP32: controls the hardware
+- MQTT: transfers messages
+- ESP32: executes hardware actions
+
+---
 
 ## Core Components
 
 ### Hardware
 
 #### ESP32
-The ESP32 acts as the primary IoT controller. It connects to Wi-Fi, reads sensor data, receives MQTT commands, and controls connected devices.
+Acts as the main IoT controller. It connects to Wi‑Fi, reads sensor data, receives MQTT commands, and controls connected devices.
 
 #### DHT22
 Used to read temperature and humidity values.
 
 #### Relay Module
-Used to switch electrical devices safely when a relay-based control mechanism is needed.
+Used to switch electrical devices safely when relay-based control is required.
 
 #### LEDs / Demo Devices
-Used during development and testing to demonstrate device control before connecting real appliances.
+Used during development and testing to simulate real device behavior safely.
 
 ### Software
 
@@ -181,25 +183,27 @@ Used during development and testing to demonstrate device control before connect
 Used to access and process the camera feed.
 
 #### MediaPipe Hands
-Used to detect the user's hand and identify landmarks for gesture recognition.
+Used to detect the user’s hand and identify landmarks for gesture recognition.
 
 #### Gesture Recognition Module
-Classifies predefined hand gestures using landmark data.
+Uses hand landmark information to classify predefined gestures.
 
 #### FastAPI
-Provides the backend API layer for receiving commands, validating requests, managing device states, publishing MQTT messages, and serving dashboard data.
+Acts as the backend API layer for receiving commands, validating requests, managing device states, publishing MQTT messages, and serving dashboard data.
 
 #### MQTT
 Used for communication between the backend and ESP32.
 
 #### React
-Used to build the web dashboard, allowing users to:
+Used to build the web dashboard so users can:
 
 - View device status
 - Turn devices on or off
 - View temperature and humidity
-- Trigger system modes
+- Trigger device modes
 - Review recent activity
+
+---
 
 ## Technology Stack
 
@@ -234,27 +238,29 @@ Used to build the web dashboard, allowing users to:
 - Docker
 - Git and GitHub
 
-Docker is helpful for consistent development and deployment, but it should not block the core Version 1 build. The main priority is to get the system working reliably.
+Docker is useful for development and deployment, but it should not block the first working version of the system.
+
+---
 
 ## System Flow
 
 ```text
-                    USER
-                   /    \
-                  /      \
-          Hand Gesture   Phone Dashboard
-                |              |
-                v              v
-             Camera         Web Interface
-                |              |
-                v              v
-        OpenCV + MediaPipe     API Request
-                |              |
-                +-------> Backend <-------+
+                         USER
+                       /     \
+                      /       \
+           Hand Gesture     Phone Dashboard
+                |                  |
+                v                  v
+             Camera           Web Interface
+                |                  |
+                v                  v
+      OpenCV + MediaPipe     API Request
+                |                  |
+                +--------> Backend <--------+
                             ^
                             |
                          DHT22
-                    Temperature/Humidity
+                    Temperature / Humidity
                             |
                             v
                     Command Validation
@@ -269,13 +275,15 @@ Docker is helpful for consistent development and deployment, but it should not b
                    Light          Fan
 ```
 
+---
+
 ## Development Plan
 
 ### Phase 1: Basic hardware setup
 
 - Set up the ESP32
 - Connect an LED or demo device
-- Test Wi-Fi connectivity
+- Test Wi‑Fi connectivity
 - Test MQTT communication
 
 Goal: send a command from software and control a physical output.
@@ -287,7 +295,7 @@ Goal: send a command from software and control a physical output.
 - Define device control APIs
 - Test command flow with the ESP32
 
-Goal: establish a reliable backend-to-ESP32 pipeline.
+Goal: create a reliable backend-to-ESP32 pipeline.
 
 ### Phase 3: Hand detection
 
@@ -300,123 +308,99 @@ Goal: reliably detect a hand.
 
 ### Phase 4: Gesture recognition
 
-- Define the Version 1 gesture set
+- Define Version 1 gestures
 - Implement gesture detection logic
 - Add confidence checks
 - Connect recognized gestures to backend commands
 
 Goal: convert gestures into reliable commands.
 
-## Summary
+### Phase 5: Mobile dashboard
 
-This project combines computer vision, IoT, and web control into a flexible smart home interface. It supports intuitive gesture control, manual mobile control, and context-aware environment monitoring while keeping the first version realistic, reliable, and achievable within the project timeline.
-
-
-Phase 5: Mobile Dashboard
-
-Build the React interface
-
-Display device states
-
-Add ON/OFF controls
-
-Add temperature and humidity display
+- Build the React interface
+- Display device states
+- Add ON/OFF controls
+- Add temperature and humidity display
 
 Goal: allow manual control from a phone.
 
-Phase 6: Sensor Integration
+### Phase 6: Sensor integration
 
-Connect the DHT22 to ESP32
-
-Read temperature and humidity
-
-Send sensor data to the backend
-
-Display data on the dashboard
+- Connect the DHT22 to the ESP32
+- Read temperature and humidity
+- Send sensor data to the backend
+- Display the data on the dashboard
 
 Goal: add environmental context.
 
-Phase 7: Integration
+### Phase 7: Full system integration
 
-Connect all modules:
+- Connect gesture input
+- Connect dashboard control
+- Connect sensor data
+- Route everything through the backend
+- Send final commands through MQTT to the ESP32
 
-Gesture
-   +
-Dashboard
-   +
-Sensor Data
-       ↓
-     Backend
-       ↓
-      MQTT
-       ↓
-     ESP32
-       ↓
-     Devices
+Goal: unify all modules into one working system.
 
-Phase 8: Testing and Documentation
+### Phase 8: Testing and documentation
 
-Test each gesture repeatedly
+- Test each gesture repeatedly
+- Test dashboard commands
+- Test MQTT communication
+- Test ESP32 reconnect behavior
+- Test invalid commands
+- Record demonstrations
+- Prepare project documentation
 
-Test dashboard commands
+Goal: ensure the system is stable and well documented.
 
-Test MQTT communication
+---
 
-Test ESP32 reconnect behavior
+## Version 1 Success Criteria
 
-Test invalid commands
+Version 1 will be considered successful when all of the following are true:
 
-Record demonstrations
+- The camera reliably detects the predefined gestures
+- Gestures trigger valid commands
+- The dashboard can control devices manually
+- Commands are transmitted through MQTT
+- The ESP32 receives and executes commands correctly
+- Device states are visible on the dashboard
+- Temperature and humidity are displayed correctly
+- The complete system works on a local network
 
-Prepare project documentation
+---
 
-Version 1 Success Criteria
+## Future Enhancements (Version 2)
 
-Version 1 will be considered successful when:
+After Version 1 is stable, additional features can be introduced.
 
-The camera reliably detects predefined gestures
+### Possible features
 
-Gestures can trigger valid commands
+- Speech recognition
+- Voice commands
+- Combined gesture and speech input
+- User preferences
+- Personalized automation
+- More advanced context awareness
 
-The dashboard can control devices manually
-
-Commands are transmitted through MQTT
-
-ESP32 receives and executes commands
-
-Device states are visible on the dashboard
-
-Temperature and humidity are displayed correctly
-
-The complete system works on the local network
-
-Version 2
-
-After Version 1 is stable, Version 2 can introduce speech recognition.
-
-The architecture will become multimodal:
-
+```text
 Hand Gesture ──┐
                │
 Speech Input ──┼──→ Intent / Backend ──→ MQTT ──→ ESP32
                │
 Dashboard ─────┘
+```
 
 Speech recognition should be added as another input method without rebuilding the entire IoT system.
 
-Possible Version 2 additions:
+---
 
-Speech recognition
+## Summary
 
-Voice commands
+This project combines computer vision, IoT, and web control into a flexible smart home system. It supports gesture-based interaction, manual phone control, and contextual environmental monitoring while keeping the first version realistic, reliable, and achievable within the project timeline.
 
-Combined gesture and speech input
-
-User preferences
-
-Personalized automation
-
-More advanced context awareness
 
 Project Principle
 
