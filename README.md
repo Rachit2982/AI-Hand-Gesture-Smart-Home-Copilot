@@ -399,49 +399,53 @@ Speech recognition should be added as another input method without rebuilding th
 
 ## Summary
 
-This project combines computer vision, IoT, and web control into a flexible smart home system. It supports gesture-based interaction, manual phone control, and contextual environmental monitoring while keeping the first version realistic, reliable, and achievable within the project timeline.
+This project combines computer vision, IoT, and web control into a flexible smart home system. It supports gesture-based interaction, manual phone control, and environmental monitoring while keeping the first version realistic, reliable, and achievable within the project timeline.
 
+---
 
-Project Principle
+## Project Principle
 
-The system should remain simple and reliable.
+The system should remain simple, stable, and reliable.
 
 The priority for Version 1 is:
 
+```text
 Reliable Input
-    ↓
+      ↓
 Correct Command
-    ↓
+      ↓
 Reliable Communication
-    ↓
+      ↓
 Correct Device Action
+```
 
-Advanced features should only be added after the basic pipeline is working properly.
+Advanced features should only be introduced after the core pipeline is working properly.
 
-Repository Structure
+---
 
+## Repository Structure
+
+```text
 AI-Hand-Gesture-Smart-Home-Copilot/
-│
-├── frontend/              # React dashboard
-│
-├── backend/               # FastAPI application
-│
-├── gesture-recognition/   # OpenCV and MediaPipe code
-│
-├── esp32/                 # ESP32 firmware
-│
-├── docs/                  # Documentation and diagrams
-│
-├── roadmap.png            # Project roadmap image
-│
-└── README.md
+├── frontend/                 # React dashboard
+├── backend/                  # FastAPI application
+├── gesture-recognition/      # OpenCV and MediaPipe code
+├── esp32/                    # ESP32 firmware
+├── docs/                     # Documentation and diagrams
+├── mini_project_mind_map.png # Project roadmap image
+├── README.md
+└── .git/
+```
 
-Current Status
+---
+
+## Current Status
 
 Version 1 is currently under development.
 
-The immediate focus is to build the core pipeline:
+The immediate focus is on building the core pipeline:
 
+```text
 Camera / Dashboard
         ↓
       Backend
@@ -451,16 +455,18 @@ Camera / Dashboard
       ESP32
         ↓
    Demo Devices
+```
 
-Once this pipeline is stable, gesture recognition and sensor-based context features can be integrated step by step.
+Once this pipeline is stable, gesture recognition and sensor-based context features can be added step by step.
 
-Team Members
+---
 
-This project is developed by:
+## Project Developed By
 
-Rachit Saxena
+| Name |
+| --- |
+| Rachit Saxena |
+| Raghav Agarwal |
+| Mukul Kumar |
 
-Raghav Agarwal
-
-Mukul Kumar
-
+---
